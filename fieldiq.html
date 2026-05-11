@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FieldIQ — AI Farmer Advisory</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --cream: #f0ebe0;
+  --cream2: #e6dfd0;
+  --dark: #141208;
+  --green: #2d5016;
+  --green2: #3d6e1a;
+  --green3: #5a9e2a;
+  --amber: #c47b0a;
+  --amber2: #e09a20;
+  --red: #b83020;
+  --muted: #6b6248;
+  --border: #cbbfa8;
+  --card: #ede6d5;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--cream);color:var(--dark);font-family:'DM Sans',sans-serif;overflow-x:hidden;}
+
+/* NAV */
+nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 48px;
+  border-bottom:1.5px solid var(--border);
+  background:var(--cream);
+  position:sticky;top:0;z-index:100;
+}
+.nav-logo{display:flex;align-items:center;gap:12px;}
+.logo-circle{
+  width:44px;height:44px;background:var(--green);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;
+}
+.logo-text h1{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;line-height:1;letter-spacing:-0.3px;}
+.logo-text p{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-top:1px;}
+
+/* LANG */
+.lang-switcher{position:relative;}
+.lang-btn{
+  display:flex;align-items:center;gap:8px;
+  border:1.5px solid var(--border);border-radius:999px;
+  padding:9px 18px;font-size:13px;font-weight:600;
+  background:var(--card);cursor:pointer;color:var(--dark);
+  font-family:'DM Sans',sans-serif;transition:all 0.2s;
+}
+.lang-btn:hover{background:var(--dark);color:var(--cream);border-color:var(--dark);}
+.lang-dropdown{
+  display:none;position:absolute;right:0;top:calc(100% + 8px);
+  background:var(--cream);border:1.5px solid var(--border);
+  border-radius:14px;overflow:hidden;min-width:160px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.12);z-index:200;
+}
+.lang-dropdown.open{display:block;}
+.lang-option{
+  padding:12px 18px;font-size:14px;font-weight:500;cursor:pointer;
+  transition:background 0.15s;display:flex;align-items:center;gap:10px;
+  border-bottom:1px solid var(--border);
+}
+.lang-option:last-child{border-bottom:none;}
+.lang-option:hover{background:var(--card);}
+.lang-option.active{color:var(--green2);font-weight:700;}
+
+/* HERO */
+.hero{
+  display:grid;grid-template-columns:55% 45%;
+  min-height:calc(100vh - 77px);
+  border-bottom:1.5px solid var(--border);
+}
+.hero-left{
+  padding:64px 52px;border-right:1.5px solid var(--border);
+  display:flex;flex-direction:column;justify-content:center;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--card);border:1.5px solid var(--border);
+  border-radius:999px;padding:8px 18px;
+  font-size:12px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--green2);
+  margin-bottom:32px;width:fit-content;
+}
+.badge-dot{width:7px;height:7px;background:var(--green3);border-radius:50%;animation:blink 2s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.hero-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(44px,5vw,72px);font-weight:900;
+  line-height:1.05;letter-spacing:-1.5px;margin-bottom:20px;
+}
+.hero-title em{font-style:italic;color:var(--green2);}
+.hero-sub{font-size:17px;color:var(--muted);line-height:1.7;font-weight:300;max-width:440px;margin-bottom:40px;}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:44px;}
+.btn-dark{
+  display:flex;align-items:center;gap:8px;
+  background:var(--dark);color:var(--cream);border:none;border-radius:12px;
+  padding:14px 26px;font-size:15px;font-weight:600;
+  font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;
+}
+.btn-dark:hover{background:var(--green);transform:translateY(-2px);}
+.btn-outline{
+  display:flex;align-items:center;gap:8px;background:transparent;color:var(--dark);
+  border:1.5px solid var(--border);border-radius:12px;padding:14px 22px;
+  font-size:15px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;
+}
+.btn-outline:hover{background:var(--card);}
+.hero-tags{display:flex;flex-wrap:wrap;gap:8px;}
+.htag{
+  border:1.5px solid var(--border);border-radius:999px;
+  padding:7px 16px;font-size:13px;font-weight:500;
+  cursor:pointer;transition:all 0.2s;background:transparent;
+}
+.htag:hover{background:var(--dark);color:var(--cream);border-color:var(--dark);}
+
+/* HERO RIGHT */
+.hero-right{display:flex;flex-direction:column;background:var(--card);}
+.hcard{flex:1;padding:32px;border-bottom:1.5px solid var(--border);display:flex;flex-direction:column;}
+.hcard:last-child{border-bottom:none;}
+.hcard-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:10px;}
+.hcard-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:6px;}
+.hcard-sub{font-size:13px;color:var(--muted);margin-bottom:18px;}
+
+.crop-graphic{display:flex;align-items:center;justify-content:center;flex:1;position:relative;}
+.ring-outer{width:170px;height:170px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;animation:spin-slow 18s linear infinite;}
+@keyframes spin-slow{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.ring-mid{width:134px;height:134px;border-radius:50%;background:var(--amber2);display:flex;align-items:center;justify-content:center;}
+.ring-inner{width:100px;height:100px;border-radius:50%;background:var(--cream);display:flex;align-items:center;justify-content:center;font-size:44px;animation:spin-slow 18s linear infinite reverse;}
+.float-tag{
+  position:absolute;background:var(--cream);border:1.5px solid var(--border);border-radius:999px;
+  padding:8px 14px;font-size:12px;font-weight:600;
+  display:flex;align-items:center;gap:7px;box-shadow:0 4px 16px rgba(0,0,0,0.1);
+}
+.float-tag.t1{top:10px;right:0;animation:bob 3s ease-in-out infinite;}
+.float-tag.t2{bottom:10px;right:0;animation:bob 3s ease-in-out infinite 1.5s;}
+@keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-7px);}}
+.dot{width:7px;height:7px;border-radius:50%;}
+.dot-red{background:var(--red);}
+.dot-green{background:var(--green3);}
+
+/* SECTION */
+section{border-bottom:1.5px solid var(--border);}
+.section-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2.5px;color:var(--muted);margin-bottom:10px;}
+.section-title{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;margin-bottom:8px;letter-spacing:-0.5px;}
+.section-sub{font-size:14px;color:var(--muted);margin-bottom:28px;font-weight:300;line-height:1.6;}
+
+/* ASK AI */
+.ask-wrap{display:grid;grid-template-columns:1fr 340px;}
+.ask-main{padding:52px;border-right:1.5px solid var(--border);}
+.ask-side{padding:32px 24px;background:var(--card);}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;}
+.chip{
+  border:1.5px solid var(--border);border-radius:999px;padding:8px 16px;
+  font-size:13px;font-weight:500;background:var(--cream);cursor:pointer;color:var(--dark);
+  font-family:'DM Sans',sans-serif;transition:all 0.2s;
+}
+.chip:hover{background:var(--dark);color:var(--cream);border-color:var(--dark);}
+.ask-row{display:flex;gap:10px;}
+.ask-input{
+  flex:1;border:1.5px solid var(--border);border-radius:12px;
+  padding:13px 16px;font-size:14px;font-family:'DM Sans',sans-serif;
+  background:var(--card);color:var(--dark);outline:none;transition:border-color 0.2s;
+}
+.ask-input:focus{border-color:var(--green2);}
+.ask-input::placeholder{color:#aaa090;}
+.ask-btn{
+  background:var(--green);color:var(--cream);border:none;border-radius:12px;
+  padding:13px 22px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;
+  cursor:pointer;transition:background 0.2s;white-space:nowrap;
+}
+.ask-btn:hover{background:var(--green2);}
+.ask-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.chat-area{display:flex;flex-direction:column;gap:14px;margin-top:24px;max-height:380px;overflow-y:auto;}
+.msg{padding:13px 17px;border-radius:12px;font-size:14px;line-height:1.6;max-width:85%;}
+.msg.user{background:var(--dark);color:var(--cream);align-self:flex-end;border-bottom-right-radius:4px;}
+.msg.ai{background:var(--cream);border:1.5px solid var(--border);align-self:flex-start;border-bottom-left-radius:4px;}
+.msg.loading{background:var(--cream);border:1.5px solid var(--border);color:var(--muted);font-style:italic;align-self:flex-start;}
+
+/* MANDI */
+.mandi-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:4px;}
+.mandi-sub{font-size:12px;color:var(--muted);margin-bottom:16px;}
+.mandi-table{width:100%;border-collapse:collapse;}
+.mandi-table thead tr{background:var(--dark);color:var(--cream);}
+.mandi-table th{padding:8px 10px;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;text-align:left;}
+.mandi-table td{padding:9px 10px;font-size:13px;border-bottom:1px solid var(--border);}
+.up{color:#27ae60;font-weight:600;}
+.dn{color:var(--red);font-weight:600;}
+
+/* DIAGNOSE */
+.diag-wrap{display:grid;grid-template-columns:1fr 340px;}
+.diag-main{padding:52px;border-right:1.5px solid var(--border);}
+.diag-side{padding:32px 24px;background:var(--card);}
+.upload-box{
+  border:2px dashed var(--border);border-radius:16px;
+  padding:48px 20px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:10px;
+  cursor:pointer;transition:all 0.2s;background:var(--card);
+  position:relative;min-height:200px;margin-bottom:20px;
+}
+.upload-box:hover{border-color:var(--green2);background:var(--cream2);}
+.upload-box input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.upload-icon{font-size:36px;}
+.upload-hint{font-size:14px;color:var(--muted);text-align:center;}
+.upload-hint strong{color:var(--dark);}
+.preview-img{display:none;width:100%;max-height:220px;object-fit:cover;border-radius:12px;}
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:0;}
+.flabel{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);}
+.finput{
+  border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;
+  font-size:14px;font-family:'DM Sans',sans-serif;
+  background:var(--card);color:var(--dark);outline:none;transition:border-color 0.2s;
+}
+.finput:focus{border-color:var(--green2);}
+.finput::placeholder{color:#aaa090;}
+.diag-btn{
+  width:100%;background:var(--dark);color:var(--cream);border:none;border-radius:12px;
+  padding:14px;font-size:15px;font-weight:600;font-family:'DM Sans',sans-serif;
+  cursor:pointer;margin-top:16px;transition:background 0.2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.diag-btn:hover{background:var(--green);}
+.diag-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.result-box{
+  margin-top:20px;border:1.5px solid var(--border);border-radius:12px;
+  padding:20px;background:var(--card);display:none;
+}
+.result-box.show{display:block;}
+.result-box h4{font-family:'Playfair Display',serif;font-size:18px;color:var(--green2);margin-bottom:10px;}
+.result-box p{font-size:14px;line-height:1.7;white-space:pre-wrap;}
+
+/* WEATHER */
+.w-loc{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:4px;}
+.w-temp{font-family:'Playfair Display',serif;font-size:42px;font-weight:700;line-height:1;}
+.w-desc{font-size:14px;color:var(--muted);margin:4px 0 12px;}
+.w-row{display:flex;gap:16px;}
+.w-stat strong{display:block;font-size:16px;font-weight:700;}
+.w-stat span{font-size:11px;color:var(--muted);}
+.forecast-strip{display:flex;flex-direction:column;gap:8px;margin-top:16px;}
+.fc-row{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--cream);border:1.5px solid var(--border);
+  border-radius:10px;padding:10px 14px;font-size:13px;
+}
+.fc-day{font-weight:700;width:36px;}
+.fc-icon{font-size:18px;}
+.fc-temp{font-weight:600;}
+.fc-rain{font-size:12px;color:#4a7fd4;font-weight:600;}
+
+/* HOW IT WORKS */
+.how-inner{padding:72px 52px;}
+.how-header{text-align:center;margin-bottom:56px;}
+.how-header h2{font-family:'Playfair Display',serif;font-size:40px;font-weight:900;letter-spacing:-1px;margin-bottom:10px;}
+.how-header p{font-size:15px;color:var(--muted);font-weight:300;}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);}
+.step{padding:32px 24px;border-right:1.5px solid var(--border);}
+.step:last-child{border-right:none;}
+.step-num{font-family:'Playfair Display',serif;font-size:56px;font-weight:900;color:var(--cream2);-webkit-text-stroke:1px var(--border);line-height:1;margin-bottom:12px;}
+.step-icon{font-size:28px;margin-bottom:12px;}
+.step-name{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:8px;}
+.step-desc{font-size:13px;color:var(--muted);line-height:1.6;}
+
+/* FOOTER */
+footer{
+  background:var(--dark);color:var(--cream);padding:40px 52px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.foot-logo h3{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;}
+.foot-logo p{font-size:12px;color:#6b6248;margin-top:4px;}
+.foot-right{font-size:13px;color:#6b6248;text-align:right;}
+.foot-right strong{color:var(--cream);}
+
+.spin{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:rot 0.6s linear infinite;}
+@keyframes rot{to{transform:rotate(360deg);}}
+
+@media(max-width:900px){
+  nav{padding:14px 20px;}
+  .hero{grid-template-columns:1fr;}
+  .hero-right{display:none;}
+  .hero-left{padding:44px 20px;}
+  .ask-wrap,.diag-wrap{grid-template-columns:1fr;}
+  .ask-side,.diag-side{border-top:1.5px solid var(--border);}
+  .ask-main,.diag-main{padding:32px 20px;}
+  .steps{grid-template-columns:1fr 1fr;}
+  .how-inner{padding:52px 20px;}
+  footer{flex-direction:column;gap:16px;padding:32px 20px;text-align:center;}
+  .foot-right{text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="logo-circle">🌿</div>
+    <div class="logo-text">
+      <h1>FieldIQ</h1>
+      <p data-key="tagline">AI Farmer Advisory</p>
+    </div>
+  </div>
+  <div class="lang-switcher">
+    <button class="lang-btn" onclick="toggleLangMenu()">🌐 <span id="lang-label">English</span> ▾</button>
+    <div class="lang-dropdown" id="langMenu">
+      <div class="lang-option active" onclick="setLang('en')">🇬🇧 English</div>
+      <div class="lang-option" onclick="setLang('ta')">🇮🇳 தமிழ்</div>
+      <div class="lang-option" onclick="setLang('hi')">🇮🇳 हिंदी</div>
+      <div class="lang-option" onclick="setLang('te')">🇮🇳 తెలుగు</div>
+      <div class="lang-option" onclick="setLang('kn')">🇮🇳 ಕನ್ನಡ</div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-badge"><div class="badge-dot"></div><span data-key="badge">Gemini AI · Vision + Chat</span></div>
+    <h2 class="hero-title" data-key="heroTitle">Your AI farming<br/>friend — <em>diagnose,<br/>decide, deliver</em></h2>
+    <p class="hero-sub" data-key="heroSub">Snap a leaf. Ask anything. Get instant expert advice in your language.</p>
+    <div class="hero-btns">
+      <button class="btn-dark" onclick="document.getElementById('diagnose').scrollIntoView({behavior:'smooth'})">📷 <span data-key="diagBtn">Diagnose my crop</span></button>
+      <button class="btn-outline" onclick="document.getElementById('ask').scrollIntoView({behavior:'smooth'})"><span data-key="askBtn">Ask the AI</span> ›</button>
+    </div>
+    <div class="hero-tags">
+      <span class="htag" data-key="t1">Pests</span>
+      <span class="htag" data-key="t2">Diseases</span>
+      <span class="htag" data-key="t3">Irrigation</span>
+      <span class="htag" data-key="t4">Fertilizer</span>
+      <span class="htag" data-key="t5">Market</span>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hcard">
+      <div class="hcard-eyebrow" data-key="cropHealth">Crop Health</div>
+      <div class="hcard-title" data-key="cropHealthTitle">AI-Powered Detection</div>
+      <div class="hcard-sub" data-key="cropHealthSub">Upload a leaf photo for instant diagnosis</div>
+      <div class="crop-graphic">
+        <div class="ring-outer"><div class="ring-mid"><div class="ring-inner">🌱</div></div></div>
+        <div class="float-tag t1"><div class="dot dot-red"></div><span data-key="diseaseDetected">Disease detected</span></div>
+        <div class="float-tag t2"><div class="dot dot-green"></div><span data-key="treatmentReady">Treatment ready</span></div>
+      </div>
+    </div>
+    <div class="hcard">
+      <div class="hcard-eyebrow" data-key="weatherEye">Weather</div>
+      <div id="heroWeather"><div style="font-size:13px;color:var(--muted);font-style:italic" data-key="loadingWeather">Loading weather...</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ASK AI -->
+<section id="ask">
+  <div class="ask-wrap">
+    <div class="ask-main">
+      <div class="section-eyebrow" data-key="askEyebrow">Ask Anything</div>
+      <h2 class="section-title" data-key="askTitle">Ask the AI Advisor</h2>
+      <p class="section-sub" data-key="askSub">Get expert guidance on pests, diseases, irrigation, fertilizers & market decisions — in your language.</p>
+      <div class="chips" id="chipRow">
+        <span class="chip">🍅 <span data-key="q1">Yellow leaves on tomato</span></span>
+        <span class="chip">🌾 <span data-key="q2">Fertilizer for paddy</span></span>
+        <span class="chip">💧 <span data-key="q3">Irrigation for cotton</span></span>
+        <span class="chip">🐛 <span data-key="q4">Pest signs</span></span>
+        <span class="chip">🧅 <span data-key="q5">Best time to sell onions</span></span>
+      </div>
+      <div class="ask-row">
+        <input type="text" class="ask-input" id="askInput" placeholder="Type your farming question..." onkeydown="if(event.key==='Enter')askAI()"/>
+        <button class="ask-btn" id="askBtnEl" onclick="askAI()"><span data-key="askSend">Ask AI</span> →</button>
+      </div>
+      <div class="chat-area" id="chatArea"></div>
+    </div>
+    <div class="ask-side">
+      <div class="mandi-title" data-key="mandiTitle">Today's Mandi Prices</div>
+      <div class="mandi-sub" data-key="mandiSub">Live snapshot · Indian markets</div>
+      <table class="mandi-table">
+        <thead><tr>
+          <th data-key="colCrop">Crop</th>
+          <th data-key="colPrice">Price</th>
+          <th data-key="colChange">Change</th>
+        </tr></thead>
+        <tbody>
+          <tr><td data-key="c1">Tomato</td><td>₹1,840/q</td><td class="up">+4.2%</td></tr>
+          <tr><td data-key="c2">Paddy</td><td>₹2,100/q</td><td class="dn">-1.1%</td></tr>
+          <tr><td data-key="c3">Onion</td><td>₹950/q</td><td class="up">+2.8%</td></tr>
+          <tr><td data-key="c4">Wheat</td><td>₹2,350/q</td><td class="up">+0.5%</td></tr>
+          <tr><td data-key="c5">Cotton</td><td>₹6,400/q</td><td class="dn">-0.9%</td></tr>
+          <tr><td data-key="c6">Maize</td><td>₹1,620/q</td><td class="up">+1.3%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- DIAGNOSE -->
+<section id="diagnose">
+  <div class="diag-wrap">
+    <div class="diag-main">
+      <div class="section-eyebrow" data-key="diagEyebrow">Crop Diagnosis</div>
+      <h2 class="section-title" data-key="diagTitle">Diagnose a Crop Disease</h2>
+      <p class="section-sub" data-key="diagSub">Upload a clear photo of the affected leaf. AI will identify the disease and suggest treatment.</p>
+      <div class="upload-box" id="uploadBox">
+        <input type="file" id="fileInput" accept="image/*" onchange="previewImage(event)"/>
+        <img id="previewImg" class="preview-img" alt="preview"/>
+        <div id="uploadPlaceholder">
+          <div class="upload-icon">📷</div>
+          <p class="upload-hint"><strong data-key="uploadHint1">Click to upload</strong> <span data-key="uploadHint2">or drag & drop your photo</span></p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="flabel" data-key="cropNameLabel">Crop Name (optional)</label>
+        <input type="text" class="finput" id="cropName" placeholder="e.g. Tomato, Paddy"/>
+      </div>
+      <button class="diag-btn" id="diagBtnEl" onclick="diagnose()">✨ <span data-key="diagNow">Diagnose Now</span></button>
+      <div class="result-box" id="diagResult">
+        <h4 data-key="diagResultTitle">🔬 Diagnosis Result</h4>
+        <p id="diagText"></p>
+      </div>
+    </div>
+    <div class="diag-side">
+      <div class="section-eyebrow" data-key="weatherSide">Live Weather</div>
+      <div id="weatherFull"><div style="font-size:13px;color:var(--muted);font-style:italic">Fetching weather...</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="how-inner">
+    <div class="how-header">
+      <p class="section-eyebrow" data-key="howEyebrow">How it works</p>
+      <h2 data-key="howTitle">Simple steps, smart results</h2>
+      <p data-key="howSub">No complicated setup. Works in your language. Start getting advice in minutes.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div><div class="step-icon">📷</div>
+        <div class="step-name" data-key="s1name">Snap a photo</div>
+        <div class="step-desc" data-key="s1desc">Take a clear photo of your affected crop leaf or any part of the plant.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div><div class="step-icon">⬆️</div>
+        <div class="step-name" data-key="s2name">Upload to FieldIQ</div>
+        <div class="step-desc" data-key="s2desc">Upload the image or simply type your question in your own language.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div><div class="step-icon">🤖</div>
+        <div class="step-name" data-key="s3name">AI analyzes it</div>
+        <div class="step-desc" data-key="s3desc">FieldIQ identifies the disease, pest, or issue within seconds.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div><div class="step-icon">✅</div>
+        <div class="step-name" data-key="s4name">Get clear advice</div>
+        <div class="step-desc" data-key="s4desc">Receive simple, actionable treatment and prevention steps in your language.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo">
+    <h3>FieldIQ</h3>
+    <p data-key="footSub">AI-Based Farmer Query Support & Advisory System</p>
+  </div>
+  <div class="foot-right">
+    <strong data-key="footBuilt">Built for every Indian farmer</strong><br/>
+    <span data-key="footCopy">© 2025 FieldIQ · All rights reserved</span>
+  </div>
+</footer>
+
+<script>
+// ── BACKEND PROXY (key stays server-side, never exposed) ──
+// Change this to your deployed backend URL when you host the site.
+const API_BASE = 'https://crop-diagnosis-1.preview.emergentagent.com';
+const ASK_URL = `${API_BASE}/api/ask`;
+const DIAGNOSE_URL = `${API_BASE}/api/diagnose`;
+
+// ── TRANSLATIONS ──
+const T = {
+  en:{
+    tagline:'AI Farmer Advisory',badge:'Gemini AI · Vision + Chat',
+    heroTitle:'Your AI farming\nfriend — diagnose,\ndecide, deliver',
+    heroSub:'Snap a leaf. Ask anything. Get instant expert advice in your language.',
+    diagBtn:'Diagnose my crop',askBtn:'Ask the AI',
+    t1:'Pests',t2:'Diseases',t3:'Irrigation',t4:'Fertilizer',t5:'Market',
+    cropHealth:'Crop Health',cropHealthTitle:'AI-Powered Detection',
+    cropHealthSub:'Upload a leaf photo for instant diagnosis',
+    diseaseDetected:'Disease detected',treatmentReady:'Treatment ready',
+    weatherEye:'Weather',loadingWeather:'Loading weather...',
+    askEyebrow:'Ask Anything',askTitle:'Ask the AI Advisor',
+    askSub:'Get expert guidance on pests, diseases, irrigation, fertilizers & market decisions — in your language.',
+    q1:'Yellow leaves on tomato',q2:'Fertilizer for paddy',q3:'Irrigation for cotton',q4:'Pest signs',q5:'Best time to sell onions',
+    askSend:'Ask AI',
+    mandiTitle:"Today's Mandi Prices",mandiSub:'Live snapshot · Indian markets',
+    colCrop:'Crop',colPrice:'Price',colChange:'Change',
+    c1:'Tomato',c2:'Paddy',c3:'Onion',c4:'Wheat',c5:'Cotton',c6:'Maize',
+    diagEyebrow:'Crop Diagnosis',diagTitle:'Diagnose a Crop Disease',
+    diagSub:'Upload a clear photo of the affected leaf. AI will identify the disease and suggest treatment.',
+    uploadHint1:'Click to upload',uploadHint2:'or drag & drop your photo',
+    cropNameLabel:'Crop Name (optional)',diagNow:'Diagnose Now',diagResultTitle:'🔬 Diagnosis Result',
+    weatherSide:'Live Weather',
+    howEyebrow:'How it works',howTitle:'Simple steps, smart results',
+    howSub:'No complicated setup. Works in your language. Start getting advice in minutes.',
+    s1name:'Snap a photo',s1desc:'Take a clear photo of your affected crop leaf or any part of the plant.',
+    s2name:'Upload to FieldIQ',s2desc:'Upload the image or simply type your question in your own language.',
+    s3name:'AI analyzes it',s3desc:'FieldIQ identifies the disease, pest, or issue within seconds.',
+    s4name:'Get clear advice',s4desc:'Receive simple, actionable treatment and prevention steps in your language.',
+    footSub:'AI-Based Farmer Query Support & Advisory System',
+    footBuilt:'Built for every Indian farmer',footCopy:'© 2025 FieldIQ · All rights reserved',
+    system:'You are FieldIQ, an expert AI farming advisor for Indian farmers. Give accurate, simple, actionable advice on crop diseases, pests, irrigation, fertilizers, and market decisions. Keep answers clear and practical.',
+    diagPrompt:'You are an expert agricultural advisor. Analyze this crop image and provide:\n1. Disease/pest/deficiency diagnosis\n2. Severity level (Low/Medium/High)\n3. Treatment recommendations (specific and actionable)\n4. Preventive measures\n\nBe concise and practical.',
+  },
+  ta:{
+    tagline:'AI விவசாய ஆலோசகர்',badge:'Gemini AI · பார்வை + அரட்டை',
+    heroTitle:'உங்கள் AI விவசாய\nநண்பர் — கண்டறிக,\nதீர்மானிக்க, வழங்க',
+    heroSub:'ஒரு இலையை புகைப்படம் எடுங்கள். எதையும் கேளுங்கள். உங்கள் மொழியில் உடனடி ஆலோசனை பெறுங்கள்.',
+    diagBtn:'என் பயிரை கண்டறி',askBtn:'AI-ஐ கேளுங்கள்',
+    t1:'பூச்சிகள்',t2:'நோய்கள்',t3:'நீர்ப்பாசனம்',t4:'உரம்',t5:'சந்தை',
+    cropHealth:'பயிர் ஆரோக்கியம்',cropHealthTitle:'AI கண்டறிதல்',
+    cropHealthSub:'உடனடி கண்டறிதலுக்கு இலை புகைப்படம் பதிவேற்றவும்',
+    diseaseDetected:'நோய் கண்டறியப்பட்டது',treatmentReady:'சிகிச்சை தயார்',
+    weatherEye:'வானிலை',loadingWeather:'வானிலை ஏற்றுகிறது...',
+    askEyebrow:'எதையும் கேளுங்கள்',askTitle:'AI ஆலோசகரிடம் கேளுங்கள்',
+    askSub:'பூச்சிகள், நோய்கள், நீர்ப்பாசனம், உரங்கள் மற்றும் சந்தை முடிவுகள் பற்றி நிபுணர் வழிகாட்டுதல் பெறுங்கள்.',
+    q1:'தக்காளியில் மஞ்சள் இலைகள்',q2:'நெல்லுக்கு உரம்',q3:'பருத்திக்கு நீர்ப்பாசனம்',q4:'பூச்சி அறிகுறிகள்',q5:'வெங்காயம் விற்க சிறந்த நேரம்',
+    askSend:'AI கேளுங்கள்',
+    mandiTitle:'இன்றைய மண்டி விலைகள்',mandiSub:'நேரடி தகவல் · இந்திய சந்தைகள்',
+    colCrop:'பயிர்',colPrice:'விலை',colChange:'மாற்றம்',
+    c1:'தக்காளி',c2:'நெல்',c3:'வெங்காயம்',c4:'கோதுமை',c5:'பருத்தி',c6:'மக்காச்சோளம்',
+    diagEyebrow:'பயிர் கண்டறிதல்',diagTitle:'பயிர் நோயை கண்டறிக',
+    diagSub:'பாதிக்கப்பட்ட இலையின் தெளிவான புகைப்படத்தை பதிவேற்றவும்.',
+    uploadHint1:'பதிவேற்ற கிளிக் செய்யுங்கள்',uploadHint2:'அல்லது புகைப்படத்தை இழுத்து விடுங்கள்',
+    cropNameLabel:'பயிர் பெயர் (விருப்பமானது)',diagNow:'இப்போது கண்டறிக',diagResultTitle:'🔬 கண்டறிதல் முடிவு',
+    weatherSide:'நேரடி வானிலை',
+    howEyebrow:'எப்படி செயல்படுகிறது',howTitle:'எளிய படிகள், சிறந்த முடிவுகள்',
+    howSub:'சிக்கலான அமைப்பு இல்லை. உங்கள் மொழியில் செயல்படுகிறது.',
+    s1name:'புகைப்படம் எடுங்கள்',s1desc:'பாதிக்கப்பட்ட பயிர் இலையின் தெளிவான புகைப்படம் எடுங்கள்.',
+    s2name:'FieldIQ-க்கு பதிவேற்றுங்கள்',s2desc:'படத்தை பதிவேற்றுங்கள் அல்லது உங்கள் மொழியில் கேள்வி தட்டச்சு செய்யுங்கள்.',
+    s3name:'AI பகுப்பாய்வு செய்கிறது',s3desc:'FieldIQ சில வினாடிகளில் நோய், பூச்சி அல்லது சிக்கலை அடையாளம் காண்கிறது.',
+    s4name:'தெளிவான ஆலோசனை பெறுங்கள்',s4desc:'உங்கள் மொழியில் எளிய, நடைமுறை சிகிச்சை மற்றும் தடுப்பு வழிகளை பெறுங்கள்.',
+    footSub:'AI அடிப்படையிலான விவசாயி வினவல் ஆதரவு & ஆலோசனை அமைப்பு',
+    footBuilt:'ஒவ்வொரு இந்திய விவசாயிக்காகவும் உருவாக்கப்பட்டது',footCopy:'© 2025 FieldIQ · அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை',
+    system:'நீங்கள் FieldIQ, இந்திய விவசாயிகளுக்கான AI விவசாய ஆலோசகர். பயிர் நோய்கள், பூச்சிகள், நீர்ப்பாசனம், உரங்கள் மற்றும் சந்தை முடிவுகள் பற்றி தமிழில் எளிய, நடைமுறை ஆலோசனை வழங்குங்கள்.',
+    diagPrompt:'நீங்கள் ஒரு விவசாய நிபுணர். இந்த பயிர் படத்தை பகுப்பாய்வு செய்து தமிழில் வழங்குங்கள்:\n1. நோய்/பூச்சி/குறைபாடு கண்டறிதல்\n2. தீவிரம்\n3. சிகிச்சை பரிந்துரைகள்\n4. தடுப்பு நடவடிக்கைகள்',
+  },
+  hi:{
+    tagline:'AI किसान सलाहकार',badge:'Gemini AI · दृष्टि + चैट',
+    heroTitle:'आपका AI खेती\nदोस्त — पहचानें,\nतय करें, पाएं',
+    heroSub:'पत्ती की फोटो लें। कुछ भी पूछें। अपनी भाषा में तुरंत विशेषज्ञ सलाह पाएं।',
+    diagBtn:'मेरी फसल जांचें',askBtn:'AI से पूछें',
+    t1:'कीट',t2:'बीमारियाँ',t3:'सिंचाई',t4:'खाद',t5:'बाजार',
+    cropHealth:'फसल स्वास्थ्य',cropHealthTitle:'AI पहचान',
+    cropHealthSub:'तुरंत जांच के लिए पत्ती की फोटो अपलोड करें',
+    diseaseDetected:'बीमारी मिली',treatmentReady:'इलाज तैयार',
+    weatherEye:'मौसम',loadingWeather:'मौसम लोड हो रहा...',
+    askEyebrow:'कुछ भी पूछें',askTitle:'AI सलाहकार से पूछें',
+    askSub:'कीट, बीमारियाँ, सिंचाई, खाद और बाजार के निर्णयों पर विशेषज्ञ मार्गदर्शन पाएं।',
+    q1:'टमाटर पर पीली पत्तियां',q2:'धान के लिए खाद',q3:'कपास की सिंचाई',q4:'कीट के संकेत',q5:'प्याज बेचने का सही समय',
+    askSend:'AI से पूछें',
+    mandiTitle:'आज के मंडी भाव',mandiSub:'सीधी जानकारी · भारतीय मंडियां',
+    colCrop:'फसल',colPrice:'भाव',colChange:'बदलाव',
+    c1:'टमाटर',c2:'धान',c3:'प्याज',c4:'गेहूं',c5:'कपास',c6:'मक्का',
+    diagEyebrow:'फसल जांच',diagTitle:'फसल रोग पहचानें',
+    diagSub:'प्रभावित पत्ती की साफ फोटो अपलोड करें। AI बीमारी पहचानकर इलाज बताएगा।',
+    uploadHint1:'अपलोड करने के लिए क्लिक करें',uploadHint2:'या फोटो यहाँ खींचें',
+    cropNameLabel:'फसल का नाम (वैकल्पिक)',diagNow:'अभी जांचें',diagResultTitle:'🔬 जांच परिणाम',
+    weatherSide:'मौसम जानकारी',
+    howEyebrow:'कैसे काम करता है',howTitle:'आसान कदम, स्मार्ट नतीजे',
+    howSub:'कोई जटिल सेटअप नहीं। आपकी भाषा में काम करता है।',
+    s1name:'फोटो लें',s1desc:'प्रभावित पत्ती या पौधे की साफ फोटो लें।',
+    s2name:'FieldIQ पर अपलोड करें',s2desc:'फोटो अपलोड करें या अपनी भाषा में सवाल लिखें।',
+    s3name:'AI विश्लेषण करता है',s3desc:'FieldIQ कुछ सेकंड में बीमारी, कीट या समस्या पहचानता है।',
+    s4name:'स्पष्ट सलाह पाएं',s4desc:'अपनी भाषा में सरल, व्यावहारिक इलाज और बचाव के तरीके पाएं।',
+    footSub:'AI आधारित किसान प्रश्न सहायता और सलाह प्रणाली',
+    footBuilt:'हर भारतीय किसान के लिए बनाया गया',footCopy:'© 2025 FieldIQ · सर्वाधिकार सुरक्षित',
+    system:'आप FieldIQ हैं, भारतीय किसानों के लिए AI खेती सलाहकार। फसल रोग, कीट, सिंचाई, खाद और बाजार के बारे में हिंदी में सरल, व्यावहारिक सलाह दें।',
+    diagPrompt:'आप एक कृषि विशेषज्ञ हैं। इस फसल की छवि का विश्लेषण करें और हिंदी में बताएं:\n1. रोग/कीट/कमी पहचान\n2. गंभीरता\n3. उपचार सुझाव\n4. बचाव के उपाय',
+  },
+  te:{
+    tagline:'AI రైతు సలహాదారు',badge:'Gemini AI · దృష్టి + చాట్',
+    heroTitle:'మీ AI వ్యవసాయ\nమిత్రుడు — నిర్ధారించు,\nనిర్ణయించు, పంపించు',
+    heroSub:'ఆకు ఫోటో తీయండి. ఏదైనా అడగండి. మీ భాషలో తక్షణ సలహా పొందండి.',
+    diagBtn:'నా పంటను నిర్ధారించు',askBtn:'AIని అడగండి',
+    t1:'పురుగులు',t2:'వ్యాధులు',t3:'నీటిపారుదల',t4:'ఎరువు',t5:'మార్కెట్',
+    cropHealth:'పంట ఆరోగ్యం',cropHealthTitle:'AI నిర్ధారణ',
+    cropHealthSub:'తక్షణ నిర్ధారణ కోసం ఆకు ఫోటో అప్‌లోడ్ చేయండి',
+    diseaseDetected:'వ్యాధి కనుగొనబడింది',treatmentReady:'చికిత్స సిద్ధం',
+    weatherEye:'వాతావరణం',loadingWeather:'వాతావరణం లోడ్ అవుతోంది...',
+    askEyebrow:'ఏదైనా అడగండి',askTitle:'AI సలహాదారుని అడగండి',
+    askSub:'పురుగులు, వ్యాధులు, నీటిపారుదల, ఎరువులు మరియు మార్కెట్ నిర్ణయాలపై నిపుణుల మార్గదర్శకత్వం పొందండి.',
+    q1:'టమాటోపై పసుపు ఆకులు',q2:'వరి కోసం ఎరువు',q3:'పత్తికి నీటిపారుదల',q4:'పురుగు సంకేతాలు',q5:'ఉల్లిపాయ అమ్మడానికి సరైన సమయం',
+    askSend:'AI అడగండి',
+    mandiTitle:'నేటి మండీ ధరలు',mandiSub:'నేరుగా · భారతీయ మార్కెట్లు',
+    colCrop:'పంట',colPrice:'ధర',colChange:'మార్పు',
+    c1:'టమాటో',c2:'వరి',c3:'ఉల్లిపాయ',c4:'గోధుమ',c5:'పత్తి',c6:'మొక్కజొన్న',
+    diagEyebrow:'పంట నిర్ధారణ',diagTitle:'పంట వ్యాధిని నిర్ధారించు',
+    diagSub:'ప్రభావిత ఆకు యొక్క స్పష్టమైన ఫోటోను అప్‌లోడ్ చేయండి.',
+    uploadHint1:'అప్‌లోడ్ చేయడానికి క్లిక్ చేయండి',uploadHint2:'లేదా ఫోటోను లాగండి',
+    cropNameLabel:'పంట పేరు (ఐచ్ఛికం)',diagNow:'ఇప్పుడు నిర్ధారించు',diagResultTitle:'🔬 నిర్ధారణ ఫలితం',
+    weatherSide:'నేరుగా వాతావరణం',
+    howEyebrow:'ఎలా పని చేస్తుంది',howTitle:'సులభమైన దశలు, తెలివైన ఫలితాలు',
+    howSub:'సంక్లిష్టమైన సెటప్ లేదు. మీ భాషలో పని చేస్తుంది.',
+    s1name:'ఫోటో తీయండి',s1desc:'ప్రభావిత పంట ఆకు యొక్క స్పష్టమైన ఫోటో తీయండి.',
+    s2name:'FieldIQ కి అప్‌లోడ్ చేయండి',s2desc:'చిత్రాన్ని అప్‌లోడ్ చేయండి లేదా మీ భాషలో ప్రశ్న టైప్ చేయండి.',
+    s3name:'AI విశ్లేషిస్తుంది',s3desc:'FieldIQ కొన్ని సెకన్లలో వ్యాధి, పురుగు లేదా సమస్యను గుర్తిస్తుంది.',
+    s4name:'స్పష్టమైన సలహా పొందండి',s4desc:'మీ భాషలో సరళమైన, ఆచరణాత్మక చికిత్స మరియు నివారణ దశలు పొందండి.',
+    footSub:'AI ఆధారిత రైతు విచారణ మద్దతు & సలహా వ్యవస్థ',
+    footBuilt:'ప్రతి భారతీయ రైతు కోసం నిర్మించబడింది',footCopy:'© 2025 FieldIQ · అన్ని హక్కులు రిజర్వ్ చేయబడ్డాయి',
+    system:'మీరు FieldIQ, భారతీయ రైతులకు AI వ్యవసాయ సలహాదారు. పంట వ్యాధులు, పురుగులు, నీటిపారుదల, ఎరువుల గురించి తెలుగులో సరళమైన సలహా ఇవ్వండి.',
+    diagPrompt:'మీరు వ్యవసాయ నిపుణులు. ఈ పంట చిత్రాన్ని విశ్లేషించి తెలుగులో ఇవ్వండి:\n1. వ్యాధి/పురుగు/లోపం\n2. తీవ్రత\n3. చికిత్స\n4. నివారణ',
+  },
+  kn:{
+    tagline:'AI ರೈತ ಸಲಹೆಗಾರ',badge:'Gemini AI · ದೃಷ್ಟಿ + ಚಾಟ್',
+    heroTitle:'ನಿಮ್ಮ AI ಕೃಷಿ\nಸ್ನೇಹಿತ — ಪತ್ತೆ ಮಾಡಿ,\nನಿರ್ಧರಿಸಿ, ಪಡೆಯಿರಿ',
+    heroSub:'ಎಲೆಯ ಫೋಟೋ ತೆಗೆಯಿರಿ. ಏನಾದರೂ ಕೇಳಿ. ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ ತಕ್ಷಣ ತಜ್ಞ ಸಲಹೆ ಪಡೆಯಿರಿ.',
+    diagBtn:'ನನ್ನ ಬೆಳೆ ಪರೀಕ್ಷಿಸಿ',askBtn:'AI ಕೇಳಿ',
+    t1:'ಕೀಟಗಳು',t2:'ರೋಗಗಳು',t3:'ನೀರಾವರಿ',t4:'ಗೊಬ್ಬರ',t5:'ಮಾರುಕಟ್ಟೆ',
+    cropHealth:'ಬೆಳೆ ಆರೋಗ್ಯ',cropHealthTitle:'AI ಪತ್ತೆ',
+    cropHealthSub:'ತ್ವರಿತ ಪತ್ತೆಗಾಗಿ ಎಲೆ ಫೋಟೋ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ',
+    diseaseDetected:'ರೋಗ ಪತ್ತೆಯಾಗಿದೆ',treatmentReady:'ಚಿಕಿತ್ಸೆ ಸಿದ್ಧ',
+    weatherEye:'ಹವಾಮಾನ',loadingWeather:'ಹವಾಮಾನ ಲೋಡ್ ಆಗುತ್ತಿದೆ...',
+    askEyebrow:'ಏನಾದರೂ ಕೇಳಿ',askTitle:'AI ಸಲಹೆಗಾರರನ್ನು ಕೇಳಿ',
+    askSub:'ಕೀಟಗಳು, ರೋಗಗಳು, ನೀರಾವರಿ, ಗೊಬ್ಬರ ಮತ್ತು ಮಾರುಕಟ್ಟೆ ನಿರ್ಧಾರಗಳ ಬಗ್ಗೆ ತಜ್ಞ ಮಾರ್ಗದರ್ಶನ ಪಡೆಯಿರಿ.',
+    q1:'ಟೊಮೇಟೊದಲ್ಲಿ ಹಳದಿ ಎಲೆಗಳು',q2:'ಭತ್ತಕ್ಕೆ ಗೊಬ್ಬರ',q3:'ಹತ್ತಿಗೆ ನೀರಾವರಿ',q4:'ಕೀಟ ಲಕ್ಷಣಗಳು',q5:'ಈರುಳ್ಳಿ ಮಾರಲು ಸರಿಯಾದ ಸಮಯ',
+    askSend:'AI ಕೇಳಿ',
+    mandiTitle:'ಇಂದಿನ ಮಂಡಿ ಬೆಲೆಗಳು',mandiSub:'ನೇರ ಮಾಹಿತಿ · ಭಾರತೀಯ ಮಂಡಿಗಳು',
+    colCrop:'ಬೆಳೆ',colPrice:'ಬೆಲೆ',colChange:'ಬದಲಾವಣೆ',
+    c1:'ಟೊಮೇಟೊ',c2:'ಭತ್ತ',c3:'ಈರುಳ್ಳಿ',c4:'ಗೋಧಿ',c5:'ಹತ್ತಿ',c6:'ಮೆಕ್ಕೆಜೋಳ',
+    diagEyebrow:'ಬೆಳೆ ಪರೀಕ್ಷೆ',diagTitle:'ಬೆಳೆ ರೋಗ ಪತ್ತೆ ಮಾಡಿ',
+    diagSub:'ಬಾಧಿತ ಎಲೆಯ ಸ್ಪಷ್ಟ ಫೋಟೋ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ.',
+    uploadHint1:'ಅಪ್‌ಲೋಡ್ ಮಾಡಲು ಕ್ಲಿಕ್ ಮಾಡಿ',uploadHint2:'ಅಥವಾ ಫೋಟೋ ಎಳೆಯಿರಿ',
+    cropNameLabel:'ಬೆಳೆ ಹೆಸರು (ಐಚ್ಛಿಕ)',diagNow:'ಈಗ ಪತ್ತೆ ಮಾಡಿ',diagResultTitle:'🔬 ಪತ್ತೆ ಫಲಿತಾಂಶ',
+    weatherSide:'ನೇರ ಹವಾಮಾನ',
+    howEyebrow:'ಹೇಗೆ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತದೆ',howTitle:'ಸರಳ ಹಂತಗಳು, ಸ್ಮಾರ್ಟ್ ಫಲಿತಾಂಶಗಳು',
+    howSub:'ಸಂಕೀರ್ಣ ಸೆಟಪ್ ಇಲ್ಲ. ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತದೆ.',
+    s1name:'ಫೋಟೋ ತೆಗೆಯಿರಿ',s1desc:'ಬಾಧಿತ ಬೆಳೆ ಎಲೆಯ ಸ್ಪಷ್ಟ ಫೋಟೋ ತೆಗೆಯಿರಿ.',
+    s2name:'FieldIQ ಗೆ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ',s2desc:'ಚಿತ್ರ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ ಅಥವಾ ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ ಪ್ರಶ್ನೆ ಟೈಪ್ ಮಾಡಿ.',
+    s3name:'AI ವಿಶ್ಲೇಷಿಸುತ್ತದೆ',s3desc:'FieldIQ ಕೆಲವೇ ಸೆಕೆಂಡುಗಳಲ್ಲಿ ರೋಗ, ಕೀಟ ಅಥವಾ ಸಮಸ್ಯೆ ಗುರುತಿಸುತ್ತದೆ.',
+    s4name:'ಸ್ಪಷ್ಟ ಸಲಹೆ ಪಡೆಯಿರಿ',s4desc:'ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ ಸರಳ, ಪ್ರಾಯೋಗಿಕ ಚಿಕಿತ್ಸೆ ಮತ್ತು ತಡೆಗಟ್ಟುವ ಹಂತಗಳು ಪಡೆಯಿರಿ.',
+    footSub:'AI ಆಧಾರಿತ ರೈತ ಪ್ರಶ್ನೆ ಬೆಂಬಲ ಮತ್ತು ಸಲಹೆ ವ್ಯವಸ್ಥೆ',
+    footBuilt:'ಪ್ರತಿ ಭಾರತೀಯ ರೈತನಿಗಾಗಿ ನಿರ್ಮಿಸಲಾಗಿದೆ',footCopy:'© 2025 FieldIQ · ಎಲ್ಲ ಹಕ್ಕುಗಳು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ',
+    system:'ನೀವು FieldIQ, ಭಾರತೀಯ ರೈತರಿಗಾಗಿ AI ಕೃಷಿ ಸಲಹೆಗಾರ. ಬೆಳೆ ರೋಗಗಳು, ಕೀಟಗಳು, ನೀರಾವರಿ, ಗೊಬ್ಬರ ಬಗ್ಗೆ ಕನ್ನಡದಲ್ಲಿ ಸರಳ ಸಲಹೆ ನೀಡಿ.',
+    diagPrompt:'ನೀವು ಕೃಷಿ ತಜ್ಞರು. ಈ ಬೆಳೆ ಚಿತ್ರ ವಿಶ್ಲೇಷಿಸಿ ಕನ್ನಡದಲ್ಲಿ ನೀಡಿ:\n1. ರೋಗ/ಕೀಟ/ಕೊರತೆ\n2. ತೀವ್ರತೆ\n3. ಚಿಕಿತ್ಸೆ\n4. ತಡೆಗಟ್ಟುವಿಕೆ',
+  }
+};
+
+const quickQs = {
+  en:['How to treat yellow leaves on my tomato plant?','Best fertilizer for paddy crop?','How often should I irrigate cotton?','Signs of pest infestation in crops?','Best time to sell onions this season?'],
+  ta:['என் தக்காளி செடியில் மஞ்சள் இலைகளை எப்படி சரி செய்வது?','நெல் பயிருக்கு சிறந்த உரம் எது?','பருத்திக்கு எத்தனை நாட்களுக்கு ஒரு முறை நீர் பாய்ச்ச வேண்டும்?','பயிர்களில் பூச்சி தாக்குதல் அறிகுறிகள் என்ன?','இந்த சீசனில் வெங்காயம் விற்க சிறந்த நேரம் எப்போது?'],
+  hi:['मेरे टमाटर पर पीली पत्तियों का इलाज कैसे करें?','धान के लिए सबसे अच्छा खाद?','कपास को कितनी बार सींचना चाहिए?','फसलों में कीट के संकेत क्या हैं?','प्याज बेचने का सबसे अच्छा समय कब है?'],
+  te:['టమాటో మొక్కపై పసుపు ఆకులు ఎలా చికిత్స చేయాలి?','వరి పంటకు ఉత్తమ ఎరువు ఏది?','పత్తిని ఎంత తరచుగా నీరు పోయాలి?','పంటలలో పురుగు సంకేతాలు ఏమిటి?','ఉల్లిపాయ అమ్మడానికి ఉత్తమ సమయం ఎప్పుడు?'],
+  kn:['ಟೊಮೇಟೊ ಗಿಡದಲ್ಲಿ ಹಳದಿ ಎಲೆಗಳನ್ನು ಹೇಗೆ ಗುಣಪಡಿಸುವುದು?','ಭತ್ತದ ಬೆಳೆಗೆ ಉತ್ತಮ ಗೊಬ್ಬರ ಯಾವುದು?','ಹತ್ತಿಗೆ ಎಷ್ಟು ಬಾರಿ ನೀರು ಹಾಕಬೇಕು?','ಬೆಳೆಗಳಲ್ಲಿ ಕೀಟ ದಾಳಿಯ ಚಿಹ್ನೆಗಳು ಯಾವುವು?','ಈರುಳ್ಳಿ ಮಾರಲು ಉತ್ತಮ ಸಮಯ ಯಾವಾಗ?']
+};
+
+let currentLang = 'en';
+const chatHistory = [];
+const langNames = {en:'English',ta:'தமிழ்',hi:'हिंदी',te:'తెలుగు',kn:'ಕನ್ನಡ'};
+
+function applyLang(lang) {
+  const t = T[lang];
+  document.querySelectorAll('[data-key]').forEach(el => {
+    const k = el.getAttribute('data-key');
+    if(t[k]!==undefined) el.textContent = t[k];
+  });
+  const chips = document.querySelectorAll('.chip');
+  const qs = quickQs[lang];
+  chips.forEach((c,i) => {
+    const inner = c.querySelector('[data-key]');
+    const emojis = ['🍅','🌾','💧','🐛','🧅'];
+    if(inner && qs[i]) { c.innerHTML = emojis[i]+' '+qs[i]; c.onclick = ()=>{ document.getElementById('askInput').value=qs[i]; document.getElementById('askInput').focus(); }; }
+  });
+  document.getElementById('lang-label').textContent = langNames[lang];
+  document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active'));
+  document.querySelector(`.lang-option[onclick="setLang('${lang}')"]`).classList.add('active');
+}
+
+function setLang(lang){ currentLang=lang; applyLang(lang); document.getElementById('langMenu').classList.remove('open'); }
+function toggleLangMenu(){ document.getElementById('langMenu').classList.toggle('open'); }
+document.addEventListener('click',e=>{ if(!e.target.closest('.lang-switcher')) document.getElementById('langMenu').classList.remove('open'); });
+
+// ── IMAGE PREVIEW ──
+function previewImage(e){
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const img=document.getElementById('previewImg');
+    img.src=ev.target.result; img.style.display='block';
+    document.getElementById('uploadPlaceholder').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── ASK AI (via secure backend) ──
+async function askAI(){
+  const input=document.getElementById('askInput');
+  const btn=document.getElementById('askBtnEl');
+  const chatArea=document.getElementById('chatArea');
+  const q=input.value.trim(); if(!q) return;
+  chatHistory.push({role:'user',parts:[{text:q}]});
+  appendMsg('user',q); input.value='';
+  const loading=appendMsg('loading','⏳ FieldIQ is thinking...');
+  btn.disabled=true; btn.innerHTML='...';
+  try{
+    const res=await fetch(ASK_URL,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({system:T[currentLang].system, history:chatHistory})
+    });
+    const data=await res.json();
+    const reply=data.reply || 'Sorry, no response.';
+    chatHistory.push({role:'model',parts:[{text:reply}]});
+    loading.remove(); appendMsg('ai',reply);
+  }catch(e){ loading.remove(); appendMsg('ai','⚠️ Error: '+e.message); }
+  btn.disabled=false; btn.innerHTML=T[currentLang].askSend+' →';
+  chatArea.scrollTop=chatArea.scrollHeight;
+}
+
+function appendMsg(type,text){
+  const area=document.getElementById('chatArea');
+  const el=document.createElement('div');
+  el.className='msg '+type; el.textContent=text;
+  area.appendChild(el); area.scrollTop=area.scrollHeight;
+  return el;
+}
+
+// ── DIAGNOSE (via secure backend) ──
+async function diagnose(){
+  const fileInput=document.getElementById('fileInput');
+  const cropName=document.getElementById('cropName').value.trim();
+  const btn=document.getElementById('diagBtnEl');
+  const result=document.getElementById('diagResult');
+  const diagText=document.getElementById('diagText');
+  if(!fileInput.files[0]){ alert('Please upload a crop image first.'); return; }
+  btn.disabled=true; btn.innerHTML='<span class="spin"></span> Analyzing...';
+  result.classList.remove('show');
+  const reader=new FileReader();
+  reader.onload=async ev=>{
+    const base64=ev.target.result.split(',')[1];
+    const mt=fileInput.files[0].type||'image/jpeg';
+    const cropHint=cropName?` The crop is: ${cropName}.`:'';
+    const prompt=T[currentLang].diagPrompt+cropHint;
+    try{
+      const res=await fetch(DIAGNOSE_URL,{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({prompt:prompt, mime_type:mt, image_b64:base64})
+      });
+      const data=await res.json();
+      diagText.textContent=data.reply||'Could not analyze image.';
+    }catch(e){ diagText.textContent='Error: '+e.message; }
+    result.classList.add('show');
+    btn.disabled=false; btn.innerHTML='✨ '+T[currentLang].diagNow;
+  };
+  reader.readAsDataURL(fileInput.files[0]);
+}
+
+// ── WEATHER ──
+async function loadWeather(){
+  let lat=13.0,lon=80.2,city='Tamil Nadu';
+  if(navigator.geolocation){
+    await new Promise(res=>navigator.geolocation.getCurrentPosition(
+      p=>{lat=p.coords.latitude;lon=p.coords.longitude;city='Your Location';res();},
+      ()=>res(),{timeout:4000}
+    ));
+  }
+  try{
+    const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=relativehumidity_2m&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=5`;
+    const r=await fetch(url); const d=await r.json();
+    const cw=d.current_weather;
+    const humidity=d.hourly?.relativehumidity_2m?.[0]??'—';
+    const icons=['☀️','🌤','⛅','☁️','🌫','🌦','🌧','❄️','⛈'];
+    const icon=icons[Math.min(Math.floor(cw.weathercode/10),icons.length-1)];
+    const dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+    document.getElementById('heroWeather').innerHTML=`
+      <div style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:4px">📍 ${city}</div>
+      <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:700;line-height:1">${Math.round(cw.temperature)}°C</div>
+      <div style="font-size:13px;color:var(--muted);margin:4px 0">${icon} ${cw.windspeed} km/h</div>
+      <div style="display:flex;gap:16px;margin-top:8px">
+        <div><strong style="display:block;font-size:14px">${humidity}%</strong><span style="font-size:11px;color:var(--muted)">Humidity</span></div>
+        <div><strong style="display:block;font-size:14px">${Math.round(cw.temperature)}°</strong><span style="font-size:11px;color:var(--muted)">Now</span></div>
+      </div>`;
+
+    const fcRows=d.daily.time.map((dt,i)=>{
+      const day=dayNames[new Date(dt).getDay()];
+      const ico=icons[Math.min(Math.floor(d.daily.weathercode[i]/10),icons.length-1)];
+      const max=Math.round(d.daily.temperature_2m_max[i]);
+      const min=Math.round(d.daily.temperature_2m_min[i]);
+      const rain=d.daily.precipitation_probability_max[i];
+      return `<div class="fc-row"><span class="fc-day">${day}</span><span class="fc-icon">${ico}</span><span class="fc-temp">${max}°/${min}°</span><span class="fc-rain">💧${rain}%</span></div>`;
+    }).join('');
+
+    document.getElementById('weatherFull').innerHTML=`
+      <div class="w-loc">📍 ${city}</div>
+      <div class="w-temp">${Math.round(cw.temperature)}°C</div>
+      <div class="w-desc">${icon} Wind: ${cw.windspeed} km/h</div>
+      <div class="w-row">
+        <div class="w-stat"><strong>${humidity}%</strong><span>Humidity</span></div>
+        <div class="w-stat"><strong>${cw.windspeed}</strong><span>km/h</span></div>
+      </div>
+      <div class="forecast-strip">${fcRows}</div>`;
+  }catch{
+    document.getElementById('heroWeather').innerHTML='<div style="font-size:13px;color:var(--muted)">Weather unavailable</div>';
+    document.getElementById('weatherFull').innerHTML='<div style="font-size:13px;color:var(--muted)">Weather unavailable</div>';
+  }
+}
+
+// init chips
+document.querySelectorAll('.chip').forEach((c,i)=>{
+  c.onclick=()=>{ document.getElementById('askInput').value=quickQs['en'][i]; document.getElementById('askInput').focus(); };
+});
+
+loadWeather();
+applyLang('en');
+</script>
+</body>
+</html>
